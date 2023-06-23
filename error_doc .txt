@@ -1,0 +1,137 @@
+**Error: seek**
+
+**Explanation:**
+EOS (End-Of-Stream) was not found and the window was not able to close. Additionally, corner test cases for backward seeking at the very beginning when it is less than 5 seconds and forward seeking at the end of stream when it is at the last 5 seconds were not possible.
+
+**Solution:**
+1. Ensure that the End-Of-Stream marker is present in the stream.
+2. For backward seeking at the very beginning when it is less than 5 seconds, update the current position to 0.
+3. For forward seeking at the end of the stream when it is at the last 5 seconds, update the current position to the end.
+4. Test and verify the seek functionality with various edge cases.
+
+**Additional resources:**
+- GStreamer documentation on seek: https://gstreamer.freedesktop.org/documentation/tutorials/basic/time-management.html?gi-language=c
+- Google search "gstreamer seek" for more info.
+
+**Error: slider seek**
+
+**Explanation:**
+When the slider was moved, it needed time to seek which made the slider crash. This error has been handled so that it works with rapid movement and will seek when the slider moves.
+
+**Solution:**
+1. Implement a time delay to handle seeking during slider movement.
+2. Optimize the seek functionality to work with rapid movement.
+3. Test and verify the slider seek functionality.
+
+**Additional resources:**
+- GStreamer documentation on slider seek: https://gstreamer.freedesktop.org/documentation/tutorials/basic/toolkit-integration.html?gi-language=c
+- Google search "gstreamer slider" for more info.
+
+**Error: volume element**
+
+**Explanation:**
+When using a Custom Pipeline to change the volume, only the source, pipeline, and decodebin elements in the playbin class were being accessed, resulting in an error because the required elements were not being accessed. To resolve this, we used element search in the Custom Pipeline and used the gst_bin_get_by_name macro function to search for the audio_bin and audio-volume elements in the pipeline. This allowed us to access the necessary elements and resolve the error. Finally, we tested and verified the volume functionality.Same error was faced in Volume slider in GUI feature,we solved using the same solution.
+
+GstElement* audio_bin = gst_bin_get_by_name(GST_BIN(pipeline), "audio_bin");
+GstElement* audio_volume = gst_bin_get_by_name(GST_BIN(audio_bin), "audio-volume");
+
+**Solution:**
+1. Use element search in pipeline using gst_bin_get_by_name macro function to access the required elements.
+2. Test and verify the volume functionality.
+
+**Additional resources:**
+- GStreamer documentation on element search: https://gstreamer.freedesktop.org/documentation/application-development/basics/elements.html?gi-language=c
+
+**Error: play next and play previous**
+
+**Explanation:**
+The issue was with setting the state of the pipeline. When the pipeline is in either "READY" or "NULL" state, the bins or the elements which were added dynamically, were still in there and we needed to flush them out as soon as the stream ends, or manually stop the pipeline. Those elements were causing issues with resuming the audio/video stream after stopping or when the end of the stream is reached. 
+
+**Solution:**
+1. Another signal resolver introduced in the thread which running the pipeline. 
+2. A signal "pad-removed" is bound to a callback which triggered as soon as pipeline transitions to the "READY" state.
+3. All the elements which were dynamically added, has been removed entirely.
+4. Then the pipeline again returns to it's initial state which looks something like this "filesrc -> decodebin".
+
+**Additional resources:**
+- GStreamer documentation on states: https://gstreamer.freedesktop.org/documentation/plugin-development/basics/states.html?gi-language=c
+
+**Error: Issues with audio and video synchronizations**
+
+**Explanation:**
+There was issues which plagued the pipeline and went unnoticed until the end of the development phase. There was slight delay of two or three seconds with both video and audio part. Even though it might not seem as a significant issue for the media with longer duration, but definitely an issue for the media with the small duration. 
+
+**Solution:**
+
+1. As we have two external bins, one of them contains the "autoaudiosink" which is needed to be set to either in "PAUSED" after initalization.
+
+**Additional resources:**
+- GStreamer documentation on bins: https://gstreamer.freedesktop.org/documentation/application-development/basics/bins.html?gi-language=c
+
+
+**Error: GUI crash and freeze**
+
+**Explanation:**
+
+Due to improper synchronization of the videosink and audiosink caused this major issue with the pipeline. Media streams(both audio/video) were being sent to the sinks in an inconsistant manner which resulted in the crashing of the GUI window. An additional queue was missing in the video bin (which contains the video processing elements including the sink).
+
+**Solution:**
+
+1. Introduction of a Queue in the video bin resolved the issue instantly.
+
+**Additional resources:**
+- GStreamer documentation on queues: https://gstreamer.freedesktop.org/documentation/coreelements/queue.html?gi-language=c
+
+**Error:Metadata issues**
+
+**Solution:**
+Displaying metadata using gst_tag_list_get_string() had error. 
+The function gst_discoverer_discover_uri() is used to rectify error using playbin.
+
+**Error: Displaying the main window with the media player name and the currently playing song name**
+
+**Explanation:**
+
+The main window was not being displayed with the correct media player name and the currently playing song name. This issue arose because the song name was not being updated dynamically as the songs changed. The name should be updated when the next or previous song is selected, as well as when the video reaches the end of the stream.
+
+**Solution:**
+
+To address this issue, the title of the main window needs to be updated dynamically whenever there is a change in the currently playing song. This can be achieved by modifying the code responsible for updating the title in the relevant functions such as next song, previous song, and end of stream.
+
+**Error: Seeking to specific time**
+
+**Explanation:**
+When seeking to a specific time, the input time must be limited to the duration of the stream. Without this limit, it may cause an error. To resolve this, we implemented limiters to restrict the input time. However, when the dialog box was opened for input, the stream would pause, which caused another issue. We fixed this by putting the pipeline to a playing state when the dialog box is destroyed.
+
+**Solution:**
+1. Implement limiters to restrict the input time to the duration of the stream.
+2. Ensure that the pipeline is in the playing state when the dialog box is destroyed.
+3. Test and verify the seeking to specific time functionality.
+
+**Additional resources:**
+- GTK+ documentation on combo box: https://zetcode.com/gui/gtk2/gtkwidgetsII/
+
+**Error: Play_pause button**
+
+**Explanation:**
+The play_pause button was being used to play and pause using a single button. However, the icon on the button was not changing accordingly when EOS, next, or previous was done.
+
+**Solution:**
+1. Modify the button to go to its original label when the EOS, next, or previous functionality is used.
+2. Test and verify the play_pause button functionality.
+
+**Additional resources:**
+- GTK+ documentation on icons: https://zetcode.com/gui/gtk2/gtkwidgetsII/
+
+**Error: Repeat checkmenu item**
+
+**Explanation:**
+The repeat menu item was not showing the check mark when the repeat button was pressed. 
+
+**Solution:**
+1. Create widgets that are equal to both the menu item and button.
+2. Assign the check menu item to true or false accordingly.
+3. Test and verify the repeat checkmenu item functionality.
+
+**Additional resources:**
+- GTK+ documentation on menu items: https://zetcode.com/gui/gtk2/menusandtoolbars/

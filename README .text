@@ -1,0 +1,67 @@
+********************* Media Player ***********************
+This is a media player that can play video files and audio files with video visualizer, and includes both keyboard and GUI features for controlling playback. The player is written in C++ using the GStreamer framework and the GTK+ toolkit.
+
+
+*******Keyboard Controls*******
+The following keyboard controls are available for controlling playback:
+'b' : Open or start playing the selected media.
+'p' : Pause or resume playback.
+'r' : Resume playback.
+'s' : Stop playback.
+'\' : Play next song/video in the Playlist.
+'|' : Play previous song/video in the playlist
+',' : Seek Backward for 5 seconds.
+'.' : Seek Forward for 5 seconds.
+[ and ] : Backward and forward the media by 60 seconds, respectively.
+{ and } : Backward and forward the media by 10% of the total duration, respectively.
+'q : Quit the player.
+'F1' : Display help information or exit help mode.
+'F2' : Toggle the playlist view.
+'d' : View the Playlist.
+'h' : Help.
+
+
+*******GUI Controls*******
+In addition to the keyboard controls, the player also includes a GUI with the following controls:
+'Play button and Pause button' : Start playing and Pause or resume playback the selected file.
+'Volume slider' : Adjust the playback volume.
+'Seek slider' : Seek through the current track.
+'Previous and Next buttons' : Go to the previous or next media in the playlist.
+'Playlist Button' : Playlist view with favourite songs.
+'Favourite Button' : Add the present song to favourite list.
+'Shuffle button' : Shuffle the playlist.
+'Repeat button' : Repeat the currently playing Song.
+'Rewind Button' : Rewind the playing video.
+'Info Button' : Displaying the Title,Artist and Duration of the present Playing song.
+'Mute Button' : Mute the Volume.
+'Help' : Displays the keyboard features.
+'About' : Gives the information of the present Media Player version. 
+Drop Downs:
+	File : Open file and Open Directory
+	Playback : Play,Stop,Seek forward/backward by 5 seconds and Seek for specific seconds,Repeat and Quit function.
+	Tools : Sleep Timer(1,5,10,15 and disable the timer) and Dark mode.
+
+*******Building and Running*******
+To build the player, you will need GStreamer 1.0 or later and GTK+ 3.0 or later installed on your system. To build the player, run the following commands:
+To Install the GStreamer 1.0 and GTK+ 3.0
+
+Install GStreamer 1.0:
+  $ sudo apt-get update
+  $ sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+  
+Install GTK+ 3.0:
+  $ sudo apt-get install libgtk-3-dev
+
+To run the player, run the following command:
+1. Open a terminal and navigate to the Debug directory of the project.
+2. Run the following command:
+   ```
+  $ make all
+  $ ./Custom_Playbin "Pathname"
+  
+  Pathname: File location path/Downloads/songs/song.mp4) or Directory location path(/Downloads/songs/).
+   
+   ``` 
+
+*******Troubleshooting*******
+If you encounter any issues with the player, please check that you have the required dependencies installed, and make sure that your GStreamer installation includes the necessary plugins for the media formats you want to play. You can also try running the player with the --debug flag to get more detailed logging output.
